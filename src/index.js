@@ -69,6 +69,9 @@
  *   "@babel/plugin-proposal-class-properties"
  * ]
  *
+ * PARA VALIDAÇÅO DOS TIPO DE PROPRIEDADES (prop-types)
+ * yarn add prop-types
+ *
  */
 
 import React from 'react';

@@ -1,10 +1,41 @@
 import React, { Component } from 'react';
+import TechItem from './TechItem';
 
 class TechList extends Component {
+  // conceito de Default Props em componente (apenas exemplo)
+  static defaultProps = {
+    item: 'Não informado',
+  };
+
+  // proptypes também poderá ser definida aqui
+  static propTypes = {};
+
   state = {
     newTech: '',
-    techs: ['Node.js', 'ReactJS', 'React Native'],
+    techs: [],
   };
+
+  componentDidMount() {
+    // executa assim que o componente aparece em tela
+    const techs = localStorage.getItem('techs');
+    if (techs) {
+      this.setState({ techs: JSON.parse(techs) });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    // executa sempre que houver alteração de props ou state
+    // ele recebe dois parametros (prevProps, prevState)
+    // para saber as props e o state anteriores
+    // se não for utilizar alguns desses parâmetro, use "_"
+    if (prevState.techs !== this.state.techs) {
+      localStorage.setItem('techs', JSON.stringify(this.state.techs));
+    }
+  }
+
+  componentWillUnmount() {
+    // executa no destroy do componente
+  }
 
   handleInputChange = e => {
     this.setState({ newTech: e.target.value });
@@ -12,10 +43,12 @@ class TechList extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.setState({
-      techs: [...this.state.techs, this.state.newTech],
-      newTech: '',
-    });
+    if (this.state.newTech) {
+      this.setState({
+        techs: [...this.state.techs, this.state.newTech],
+        newTech: '',
+      });
+    }
   };
 
   handleDelete = tech => {
@@ -28,12 +61,11 @@ class TechList extends Component {
         <h1>{this.state.newTech}</h1>
         <ul>
           {this.state.techs.map(tech => (
-            <li key={tech}>
-              {tech}
-              <button onClick={() => this.handleDelete(tech)} type="button">
-                Remover
-              </button>
-            </li>
+            <TechItem
+              key={tech}
+              item={tech}
+              fnDelete={() => this.handleDelete(tech)}
+            />
           ))}
         </ul>
         <input
